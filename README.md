@@ -38,4 +38,4 @@ If all is successful, you may point your browser to the asset canister's URL and
 ![screenshot](https://github.com/ninegua/ecdsa_example/raw/master/screenshot.png) 
 
 At the moment the build is against IC commit [d004accc3904e24dddb13a11d93451523e1a8a5f](https://github.com/dfinity/ic/commit/d004accc3904e24dddb13a11d93451523e1a8a5f) because that is what dfx 0.9.3 uses.
-If you want to run against newer version of IC (which has changed the ECDSA API), you will need to compile and run your own replica, and also don't forgot to edit the file `src/ecdsa_example/Cargo.toml` to pin the same version.
+If you want to run against newer version of IC (which has changed the ECDSA API), you will need to compile and run your own replica, and also don't forget to edit the file `src/ecdsa_example/Cargo.toml` to pin the same version.
