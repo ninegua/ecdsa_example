@@ -1,6 +1,6 @@
 use libsecp256k1::{verify, Message, PublicKey, Signature};
 
-use ic_cdk::export::{candid::CandidType, serde::Serialize, Principal};
+use ic_cdk::export::{candid::CandidType, serde::{Serialize, Deserialize}, Principal};
 use ic_cdk_macros::*;
 
 #[import(canister = "ic00")]
@@ -22,7 +22,7 @@ struct ECDSAPublicKey {
     pub key_id: EcdsaKeyId,
 }
 
-#[derive(CandidType, Serialize, Debug)]
+#[derive(CandidType, Deserialize, Debug)]
 struct ECDSAPublicKeyReply {
     pub public_key: Vec<u8>,
     pub chain_code: Vec<u8>,
@@ -35,7 +35,7 @@ struct SignWithECDSA {
     pub key_id: EcdsaKeyId,
 }
 
-#[derive(CandidType, Serialize, Debug)]
+#[derive(CandidType, Deserialize, Debug)]
 struct SignWithECDSAReply {
     pub signature: Vec<u8>,
 }
