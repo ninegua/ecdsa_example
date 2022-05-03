@@ -1,6 +1,7 @@
-import { ecdsa_example } from "../../declarations/ecdsa_example";
+import { ecdsa_example_motoko } from "../../declarations/ecdsa_example_motoko";
 import { publicKeyVerify, signatureNormalize, ecdsaVerify } from "secp256k1";
 let sha256 = require("sha256");
+let ecdsa_example = ecdsa_example_motoko;
 
 function fromHex(hexString) {
   return Uint8Array.from(Buffer.from(hexString, 'hex'))
