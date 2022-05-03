@@ -1,6 +1,10 @@
-use libsecp256k1::{verify, Message, PublicKey, Signature};
+mod helper;
 
-use ic_cdk::export::{candid::CandidType, serde::{Serialize, Deserialize}, Principal};
+use ic_cdk::export::{
+    candid::CandidType,
+    serde::{Deserialize, Serialize},
+    Principal,
+};
 use ic_cdk_macros::*;
 
 #[import(canister = "ic00")]
@@ -53,8 +57,8 @@ pub enum EcdsaCurve {
 }
 
 #[update]
-async fn sign(msg: Vec<u8>) -> Result<Bundle, String> {
-    assert!(msg.len() == 32);
+async fn sign(message: Vec<u8>) -> Result<Bundle, String> {
+    assert!(message.len() == 32);
     let key_id = EcdsaKeyId {
         curve: EcdsaCurve::Secp256k1,
         name: "".to_string(),
@@ -76,7 +80,7 @@ async fn sign(msg: Vec<u8>) -> Result<Bundle, String> {
 
     let signature: Vec<u8> = {
         let request = SignWithECDSA {
-            message_hash: msg.clone(),
+            message_hash: message.clone(),
             derivation_path: vec![vec![2, 3]],
             key_id,
         };
@@ -89,17 +93,11 @@ async fn sign(msg: Vec<u8>) -> Result<Bundle, String> {
         res.signature
     };
 
-    let response_signature =
-        Signature::parse_standard_slice(&signature).expect("Response is not a valid signature");
-    let canister_public_key =
-        PublicKey::parse_slice(&publickey, None).expect("Response is not a valid public key");
-    // Verify the signature:
-    let message = Message::parse_slice(&msg).expect("32 bytes");
-    let verified = verify(&message, &response_signature, &canister_public_key);
+    let verified = helper::verify_signature(&message, &signature, &publickey);
     ic_cdk::println!("ECDSA signature verification {}", verified);
 
     Ok(Bundle {
-        message: msg,
+        message,
         publickey,
         signature,
     })
