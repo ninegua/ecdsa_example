@@ -6,9 +6,7 @@ use ic_cdk::export::{
     Principal,
 };
 use ic_cdk_macros::*;
-
-#[import(canister = "ic00")]
-struct IC00;
+use std::str::FromStr;
 
 #[derive(CandidType, Serialize, Debug)]
 struct Bundle {
@@ -63,7 +61,8 @@ async fn sign(message: Vec<u8>) -> Result<Bundle, String> {
         curve: EcdsaCurve::Secp256k1,
         name: "".to_string(),
     };
-    //let ic00 = CanisterId::from_str("aaaaa-aa").unwrap();
+    let ic00_canister_id = std::env!("CANISTER_ID_ic00");
+    let ic00 = CanisterId::from_str(&ic00_canister_id).unwrap();
     let publickey: Vec<u8> = {
         let request = ECDSAPublicKey {
             canister_id: None,
@@ -71,7 +70,7 @@ async fn sign(message: Vec<u8>) -> Result<Bundle, String> {
             key_id: key_id.clone(),
         };
         ic_cdk::println!("Sending signature request = {:?}", request);
-        let res: ECDSAPublicKeyReply = IC00::ecdsa_public_key(request)
+        let (res,): (ECDSAPublicKeyReply,) = ic_cdk::call(ic00, "ecdsa_public_key", (request,))
             .await
             .map_err(|e| format!("Failed to call ecdsa_public_key {}", e.1))?;
         ic_cdk::println!("Got response = {:?}", res);
@@ -85,7 +84,7 @@ async fn sign(message: Vec<u8>) -> Result<Bundle, String> {
             key_id,
         };
         ic_cdk::println!("Sending signature request = {:?}", request);
-        let res: SignWithECDSAReply = IC00::sign_with_ecdsa(request)
+        let (res,): (SignWithECDSAReply,) = ic_cdk::call(ic00, "sign_with_ecdsa", (request,))
             .await
             .map_err(|e| format!("Failed to call sign_with_ecdsa {}", e.1))?;
 

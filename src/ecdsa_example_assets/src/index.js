@@ -1,23 +1,28 @@
 import { ecdsa_example_motoko } from "../../declarations/ecdsa_example_motoko";
+import { ecdsa_example_rust } from "../../declarations/ecdsa_example_rust";
 import { publicKeyVerify, signatureNormalize, ecdsaVerify } from "secp256k1";
 let sha256 = require("sha256");
-let ecdsa_example = ecdsa_example_motoko;
 
 function fromHex(hexString) {
-  return Uint8Array.from(Buffer.from(hexString, 'hex'))
+  return Uint8Array.from(Buffer.from(hexString, "hex"));
 }
 
 function verify() {
   let hash = fromHex(document.getElementById("sha256").value);
   let publickey = fromHex(document.getElementById("publickey").value);
-  let signature = signatureNormalize(fromHex(document.getElementById("signature").value));
+  let signature = signatureNormalize(
+    fromHex(document.getElementById("signature").value)
+  );
   console.log("hash", hash);
   console.log("publickey", publicKeyVerify(publickey));
   console.log("signature", signature);
   let verified = ecdsaVerify(signature, hash, publickey);
   console.log("verified = " + verified);
-  document.getElementById("verified").innerHTML = "secp256k1 signature " + (verified ? "is verified" : "fails to verify");
-  document.getElementById("verified").style.color = verified ? "#0D47A1" : "red";
+  document.getElementById("verified").innerHTML =
+    "secp256k1 signature " + (verified ? "is verified" : "fails to verify");
+  document.getElementById("verified").style.color = verified
+    ? "#0D47A1"
+    : "red";
   return false;
 }
 
@@ -34,12 +39,21 @@ async function sign(e) {
   button.disabled = true;
   spinner.hidden = false;
   // Interact with foo actor, calling the greet method
+  console.log(document.getElementById("motoko").checked);
+  console.log(document.getElementById("rust").checked);
+  let ecdsa_example = document.getElementById("motoko").checked
+    ? ecdsa_example_motoko
+    : ecdsa_example_rust;
   const res = await ecdsa_example.sign(hash);
   console.log(res);
   spinner.hidden = true;
   if (res.Ok) {
-    document.getElementById("publickey").value = Buffer.from(res.Ok.publickey).toString("hex"); 
-    document.getElementById("signature").value = Buffer.from(res.Ok.signature).toString("hex"); 
+    document.getElementById("publickey").value = Buffer.from(
+      res.Ok.publickey
+    ).toString("hex");
+    document.getElementById("signature").value = Buffer.from(
+      res.Ok.signature
+    ).toString("hex");
   } else {
     document.getElementById("error").innerText = res.Err;
   }
@@ -48,12 +62,13 @@ async function sign(e) {
 }
 
 window.addEventListener("load", () => {
-   document.getElementById("sign").onclick = sign;
-   document.getElementById("verify").onclick = verify;
-   document.getElementById("message").oninput = (evt) => {
-      const message = document.getElementById("message").value.toString();
-      document.getElementById("sha256").value = message == "" ? "" : sha256(message);
-      document.getElementById("signature").value = "";
-      document.getElementById("verified").innerText = "";
-   };
-})
+  document.getElementById("sign").onclick = sign;
+  document.getElementById("verify").onclick = verify;
+  document.getElementById("message").oninput = (evt) => {
+    const message = document.getElementById("message").value.toString();
+    document.getElementById("sha256").value =
+      message == "" ? "" : sha256(message);
+    document.getElementById("signature").value = "";
+    document.getElementById("verified").innerText = "";
+  };
+});
