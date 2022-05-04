@@ -1,13 +1,28 @@
 {
   "canisters": {
-    "ecdsa_example": {
-      "candid": "src/ecdsa_example/ecdsa_example.did",
+    "ic00": {
+      "candid": "src/ic00/ecdsa.did",
+      "wasm": "src/ic00/mock.wasm",
+      "type": "custom"
+    },
+    "ecdsa_example_motoko": {
+      "type": "motoko",
+      "main": "src/ecdsa_example_motoko/main.mo",
+      "dependencies": [
+        "ic00"
+      ]
+    },
+    "ecdsa_example_rust": {
+      "candid": "src/ecdsa_example_rust/ecdsa_example.did",
       "package": "ecdsa_example",
-      "type": "rust"
+      "type": "rust",
+      "dependencies": [
+        "ic00"
+      ]
     },
     "ecdsa_example_assets": {
       "dependencies": [
-        "ecdsa_example"
+        "ecdsa_example_motoko"
       ],
       "frontend": {
         "entrypoint": "src/ecdsa_example_assets/src/index.html"

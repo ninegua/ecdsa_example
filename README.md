@@ -1,41 +1,22 @@
 # ECDSA Signing Demo
 
-To run this demo you must be running dfx 0.9.3 or higher, and you will have to start replica and icx-proxy manually.
+Sample Motoko and Rust code on how to use the upcoming threshold ECDSA signing features of the Internet Computer.
 
-First, we start replica in one terminal:
+Because this feature has yet to be enabled on the main network, these examples use a mock implementation that is essentially a canister with the same [interface as the IC Management Canister](https://github.com/dfinity/interface-spec/blob/master/spec/index.adoc#ic-method-ecdsa_public_key) would use.
 
-```
-~/.cache/dfinity/versions/0.9.3/ic-starter \
-    --replica-path ~/.cache/dfinity/versions/0.9.3/replica \
-    --subnet-features ecdsa_signatures \
-    --dkg-interval-length=20 \
-    --subnet-type system \
-    --create-funds-whitelist '*'
-```
+You can simply change the canister to call from `ic00` used in these examples to `"aaaaa-aa"` once the feature goes live.
 
-This starts replica with all states saved in a randomly created temporary directory under `/tmp`, *everytime*.
-If this is not what you want, please add `--state-dir <state_dir>` flag.
-Also, by default replica binds port 8080 on localhost, and you can add flag `--http-port <port>` to change it.
+**IMPORTANT: PLEASE DO NOT USE THE MOCK IMPLEMENTATION HERE IN PRODUCTION**.
 
-Next, in another terminal, we'll start icx-proxy to listen at port 8000 and forward request to replica at 8080.
+To run the demo, you will need a working installation of the [DFINITY SDK](https://github.com/dfinity/sdk) and also Rust toolchain such as [rustup](https://rustup.rs).
 
-```
-~/.cache/dfinity/versions/0.9.3/icx-proxy \
-    --fetch-root-key \
-    --address 127.0.0.1:8000 \
-    --replica http://localhost:8080
-```
-
-Finally, in a third terminal, we deploy the canister:
+If you do not need Rust, please checkout the motoko-only branch.
 
 ```
 dfx deploy
 ```
 
-This should build and deploy both backend and frontend canisters.
+This should build and deploy all canisters including a frontend asset canister.
 If all is successful, you may point your browser to the asset canister's URL and see the frontend UI of this demo.
 
 ![screenshot](https://github.com/ninegua/ecdsa_example/raw/master/screenshot.png) 
-
-At the moment the build is against IC commit [d004accc3904e24dddb13a11d93451523e1a8a5f](https://github.com/dfinity/ic/commit/d004accc3904e24dddb13a11d93451523e1a8a5f) because that is what dfx 0.9.3 uses.
-If you want to run against newer version of IC (which has changed the ECDSA API), you will need to compile and run your own replica, and also don't forget to edit the file `src/ecdsa_example/Cargo.toml` to pin the same version.

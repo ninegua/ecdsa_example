@@ -1,4 +1,4 @@
 [workspace]
 members = [
-    "src/ecdsa_example",
+    "src/ecdsa_example_rust",
 ]
