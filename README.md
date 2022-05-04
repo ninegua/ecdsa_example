@@ -10,7 +10,7 @@ You can simply change the canister to call from `ic00` used in these examples to
 
 To run the demo, you will need a working installation of the [DFINITY SDK](https://github.com/dfinity/sdk) and also Rust toolchain such as [rustup](https://rustup.rs).
 
-If you do not need Rust, please checkout the motoko-only branch.
+If you do not need Rust, please checkout the [motoko-only](https://github.com/ninegua/ecdsa_example/tree/motoko-only) branch.
 
 ```
 dfx deploy

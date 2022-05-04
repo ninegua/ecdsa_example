@@ -22,7 +22,8 @@
     },
     "ecdsa_example_assets": {
       "dependencies": [
-        "ecdsa_example_motoko"
+        "ecdsa_example_motoko",
+        "ecdsa_example_rust"
       ],
       "frontend": {
         "entrypoint": "src/ecdsa_example_assets/src/index.html"
