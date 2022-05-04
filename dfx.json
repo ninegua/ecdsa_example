@@ -12,14 +12,6 @@
         "ic00"
       ]
     },
-    "ecdsa_example_rust": {
-      "candid": "src/ecdsa_example_rust/ecdsa_example.did",
-      "package": "ecdsa_example",
-      "type": "rust",
-      "dependencies": [
-        "ic00"
-      ]
-    },
     "ecdsa_example_assets": {
       "dependencies": [
         "ecdsa_example_motoko",

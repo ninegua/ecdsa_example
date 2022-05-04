@@ -1,5 +1,4 @@
 import { ecdsa_example_motoko } from "../../declarations/ecdsa_example_motoko";
-import { ecdsa_example_rust } from "../../declarations/ecdsa_example_rust";
 import { publicKeyVerify, signatureNormalize, ecdsaVerify } from "secp256k1";
 let sha256 = require("sha256");
 
@@ -39,11 +38,7 @@ async function sign(e) {
   button.disabled = true;
   spinner.hidden = false;
   // Interact with foo actor, calling the greet method
-  console.log(document.getElementById("motoko").checked);
-  console.log(document.getElementById("rust").checked);
-  let ecdsa_example = document.getElementById("motoko").checked
-    ? ecdsa_example_motoko
-    : ecdsa_example_rust;
+  let ecdsa_example = ecdsa_example_motoko;
   const res = await ecdsa_example.sign(hash);
   console.log(res);
   spinner.hidden = true;
