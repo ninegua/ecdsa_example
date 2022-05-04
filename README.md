@@ -1,14 +1,16 @@
 # ECDSA Signing Demo
 
-Motoko and Rust examples showcasing how to make use of the upcoming threshold ECDSA signing features of the Internet Computer.
+Sample Motoko and Rust code on how to use the upcoming threshold ECDSA signing features of the Internet Computer.
 
-Because this feature has yet to be enabled on the main network, the examples uses a mock implementation that is essentially a canister with the same [interface as the IC Management Canister](https://github.com/dfinity/interface-spec/blob/master/spec/index.adoc#ic-method-ecdsa_public_key) would use.
+Because this feature has yet to be enabled on the main network, these examples use a mock implementation that is essentially a canister with the same [interface as the IC Management Canister](https://github.com/dfinity/interface-spec/blob/master/spec/index.adoc#ic-method-ecdsa_public_key) would use.
 
 You can simply change the canister to call from `ic00` used in these examples to `"aaaaa-aa"` once the feature goes live.
 
 **IMPORTANT: PLEASE DO NOT USE THE MOCK IMPLEMENTATION HERE IN PRODUCTION**.
 
-To run the demo, you will need a working installation of the [DFINITY SDK](https://github.com/dfinity/sdk).
+To run the demo, you will need a working installation of the [DFINITY SDK](https://github.com/dfinity/sdk) and also Rust toolchain such as [rustup](https://rustup.rs).
+
+If you do not need Rust, please checkout the motoko-only branch.
 
 ```
 dfx deploy
