@@ -11,7 +11,7 @@ use std::str::FromStr;
 #[derive(CandidType, Serialize, Debug)]
 struct Bundle {
     pub message: Vec<u8>,
-    pub publickey: Vec<u8>,
+    //pub publickey: Vec<u8>,
     pub signature: Vec<u8>,
 }
 
@@ -59,10 +59,12 @@ async fn sign(message: Vec<u8>) -> Result<Bundle, String> {
     assert!(message.len() == 32);
     let key_id = EcdsaKeyId {
         curve: EcdsaCurve::Secp256k1,
-        name: "".to_string(),
+        name: "somekey".to_string(),
     };
-    let ic00_canister_id = std::env!("CANISTER_ID_ic00");
+    //let ic00_canister_id = std::env!("CANISTER_ID_ic00");
+    let ic00_canister_id = "aaaaa-aa";
     let ic00 = CanisterId::from_str(&ic00_canister_id).unwrap();
+    /*
     let publickey: Vec<u8> = {
         let request = ECDSAPublicKey {
             canister_id: None,
@@ -76,6 +78,7 @@ async fn sign(message: Vec<u8>) -> Result<Bundle, String> {
         ic_cdk::println!("Got response = {:?}", res);
         res.public_key
     };
+    */
 
     let signature: Vec<u8> = {
         let request = SignWithECDSA {
@@ -84,20 +87,21 @@ async fn sign(message: Vec<u8>) -> Result<Bundle, String> {
             key_id,
         };
         ic_cdk::println!("Sending signature request = {:?}", request);
-        let (res,): (SignWithECDSAReply,) = ic_cdk::call(ic00, "sign_with_ecdsa", (request,))
-            .await
-            .map_err(|e| format!("Failed to call sign_with_ecdsa {}", e.1))?;
+        let (res,): (SignWithECDSAReply,) =
+            ic_cdk::api::call::call_with_payment(ic00, "sign_with_ecdsa", (request,), 7000000000)
+                .await
+                .map_err(|e| format!("Failed to call sign_with_ecdsa {}", e.1))?;
 
         ic_cdk::println!("Got response = {:?}", res);
         res.signature
     };
-
-    let verified = helper::verify_signature(&message, &signature, &publickey);
-    ic_cdk::println!("ECDSA signature verification {}", verified);
-
+    /*
+        let verified = helper::verify_signature(&message, &signature, &publickey);
+        ic_cdk::println!("ECDSA signature verification {}", verified);
+    */
     Ok(Bundle {
         message,
-        publickey,
+        //publickey,
         signature,
     })
 }

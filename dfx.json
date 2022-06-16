@@ -45,6 +45,18 @@
     "local": {
       "bind": "127.0.0.1:8000",
       "type": "ephemeral"
+    },
+    "benchmarklarge": {
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:3cff:fe52:9419]:8080"
+      ],
+      "type": "persistent"
+    },
+    "large01": {
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:47ff:fe24:18e3]:8080"
+      ],
+      "type": "persistent"
     }
   },
   "version": 1

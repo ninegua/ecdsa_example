@@ -1,3 +1,3 @@
 service : {
-  sign : (blob) -> (variant { Ok: record { message: blob; publickey: blob; signature: blob; }; Err: text });
+  sign : (blob) -> (variant { Ok: record { message: blob; signature: blob; }; Err: text });
 }
