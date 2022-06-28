@@ -59,12 +59,12 @@ async fn sign(message: Vec<u8>) -> Result<Bundle, String> {
     assert!(message.len() == 32);
     let key_id = EcdsaKeyId {
         curve: EcdsaCurve::Secp256k1,
-        name: "somekey".to_string(),
+        name: "dfx-local-key".to_string(),
     };
     //let ic00_canister_id = std::env!("CANISTER_ID_ic00");
     let ic00_canister_id = "aaaaa-aa";
     let ic00 = CanisterId::from_str(&ic00_canister_id).unwrap();
-    /*
+
     let publickey: Vec<u8> = {
         let request = ECDSAPublicKey {
             canister_id: None,
@@ -78,7 +78,7 @@ async fn sign(message: Vec<u8>) -> Result<Bundle, String> {
         ic_cdk::println!("Got response = {:?}", res);
         res.public_key
     };
-    */
+
 
     let signature: Vec<u8> = {
         let request = SignWithECDSA {
@@ -95,10 +95,10 @@ async fn sign(message: Vec<u8>) -> Result<Bundle, String> {
         ic_cdk::println!("Got response = {:?}", res);
         res.signature
     };
-    /*
+
         let verified = helper::verify_signature(&message, &signature, &publickey);
         ic_cdk::println!("ECDSA signature verification {}", verified);
-    */
+
     Ok(Bundle {
         message,
         //publickey,
