@@ -1,5 +1,3 @@
-mod helper;
-
 use ic_cdk::export::{
     candid::CandidType,
     serde::{Deserialize, Serialize},
@@ -9,9 +7,12 @@ use ic_cdk_macros::*;
 use std::str::FromStr;
 
 #[derive(CandidType, Serialize, Debug)]
-struct Bundle {
-    pub message: Vec<u8>,
-    //pub publickey: Vec<u8>,
+struct PublicKeyReply {
+    pub public_key: Vec<u8>,
+}
+
+#[derive(CandidType, Serialize, Debug)]
+struct SignatureReply {
     pub signature: Vec<u8>,
 }
 
@@ -55,40 +56,50 @@ pub enum EcdsaCurve {
 }
 
 #[update]
-async fn sign(message: Vec<u8>) -> Result<Bundle, String> {
+async fn public_key() -> Result<PublicKeyReply, String> {
+    let key_id = EcdsaKeyId {
+        curve: EcdsaCurve::Secp256k1,
+        name: "dfx-local-key".to_string(),
+    };
+    let ic_canister_id = "aaaaa-aa";
+    let ic = CanisterId::from_str(&ic_canister_id).unwrap();
+
+    let caller = ic_cdk::caller().as_slice().to_vec();
+    let request = ECDSAPublicKey {
+        canister_id: None,
+        derivation_path: vec![caller],
+        key_id: key_id.clone(),
+    };
+    ic_cdk::println!("Sending signature request = {:?}", request);
+    let (res,): (ECDSAPublicKeyReply,) = ic_cdk::call(ic, "ecdsa_public_key", (request,))
+        .await
+        .map_err(|e| format!("Failed to call ecdsa_public_key {}", e.1))?;
+    ic_cdk::println!("Got response = {:?}", res);
+    Ok(PublicKeyReply {
+        public_key: res.public_key,
+    })
+}
+
+#[update]
+async fn sign(message: Vec<u8>) -> Result<SignatureReply, String> {
     assert!(message.len() == 32);
     let key_id = EcdsaKeyId {
         curve: EcdsaCurve::Secp256k1,
         name: "dfx-local-key".to_string(),
     };
-    //let ic00_canister_id = std::env!("CANISTER_ID_ic00");
-    let ic00_canister_id = "aaaaa-aa";
-    let ic00 = CanisterId::from_str(&ic00_canister_id).unwrap();
+    let ic_canister_id = "aaaaa-aa";
+    let ic = CanisterId::from_str(&ic_canister_id).unwrap();
 
-    let publickey: Vec<u8> = {
-        let request = ECDSAPublicKey {
-            canister_id: None,
-            derivation_path: vec![vec![2, 3]],
-            key_id: key_id.clone(),
-        };
-        ic_cdk::println!("Sending signature request = {:?}", request);
-        let (res,): (ECDSAPublicKeyReply,) = ic_cdk::call(ic00, "ecdsa_public_key", (request,))
-            .await
-            .map_err(|e| format!("Failed to call ecdsa_public_key {}", e.1))?;
-        ic_cdk::println!("Got response = {:?}", res);
-        res.public_key
-    };
-
-
+    let caller = ic_cdk::caller().as_slice().to_vec();
     let signature: Vec<u8> = {
         let request = SignWithECDSA {
             message_hash: message.clone(),
-            derivation_path: vec![vec![2, 3]],
+            derivation_path: vec![caller],
             key_id,
         };
         ic_cdk::println!("Sending signature request = {:?}", request);
         let (res,): (SignWithECDSAReply,) =
-            ic_cdk::api::call::call_with_payment(ic00, "sign_with_ecdsa", (request,), 7000000000)
+            ic_cdk::api::call::call_with_payment(ic, "sign_with_ecdsa", (request,), 10_000_000_000)
                 .await
                 .map_err(|e| format!("Failed to call sign_with_ecdsa {}", e.1))?;
 
@@ -96,12 +107,5 @@ async fn sign(message: Vec<u8>) -> Result<Bundle, String> {
         res.signature
     };
 
-        let verified = helper::verify_signature(&message, &signature, &publickey);
-        ic_cdk::println!("ECDSA signature verification {}", verified);
-
-    Ok(Bundle {
-        message,
-        //publickey,
-        signature,
-    })
+    Ok(SignatureReply { signature })
 }

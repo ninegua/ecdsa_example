@@ -7,50 +7,74 @@ function fromHex(hexString) {
   return Uint8Array.from(Buffer.from(hexString, "hex"));
 }
 
-function verify() {
+function verify(e) {
+  let output = document.getElementById("verified");
   let hash = fromHex(document.getElementById("sha256").value);
-  let publickey = fromHex(document.getElementById("publickey").value);
+  let public_key = fromHex(document.getElementById("public_key").value);
   let signature = signatureNormalize(
     fromHex(document.getElementById("signature").value)
   );
   console.log("hash", hash);
-  console.log("publickey", publicKeyVerify(publickey));
+  console.log("public_key", publicKeyVerify(public_key));
   console.log("signature", signature);
-  let verified = ecdsaVerify(signature, hash, publickey);
+  let verified = ecdsaVerify(signature, hash, public_key);
   console.log("verified = " + verified);
-  document.getElementById("verified").innerHTML =
+  output.innerHTML =
     "secp256k1 signature " + (verified ? "is verified" : "fails to verify");
-  document.getElementById("verified").style.color = verified
-    ? "#0D47A1"
-    : "red";
-  return false;
+  output.style.color = verified ? "#0D47A1" : "red";
+  return true;
 }
 
 async function sign(e) {
-  e.preventDefault();
+  const error = document.getElementById("error");
   const button = document.getElementById("sign");
-  const spinner = document.getElementById("spinner");
   const message = document.getElementById("message").value.toString();
   document.getElementById("sha256").value = sha256(message);
   let hash = sha256(message, { asBytes: true });
-  console.log(hash);
+  console.log("hash", hash);
+  document.getElementById("public_key").value = "";
   document.getElementById("signature").value = "";
   document.getElementById("verified").innerText = "";
   button.disabled = true;
-  spinner.hidden = false;
-  // Interact with foo actor, calling the greet method
-  console.log(document.getElementById("motoko").checked);
-  console.log(document.getElementById("rust").checked);
   let ecdsa_example = document.getElementById("motoko").checked
     ? ecdsa_example_motoko
     : ecdsa_example_rust;
-  const res = await ecdsa_example.sign(hash);
-  console.log(res);
-  spinner.hidden = true;
+
+  // Get public key
+  let spinner = document.getElementById("spinner-pubkey");
+  spinner.hidden = false;
+  let res;
+  try {
+    res = await ecdsa_example.public_key();
+    console.log(res);
+    spinner.hidden = true;
+  } catch (err) {
+    error.innerText = err.message;
+    spinner.hidden = true;
+    return;
+  }
   if (res.Ok) {
-    document.getElementById("publickey").value = Buffer.from(
-      res.Ok.publickey
+    document.getElementById("public_key").value = Buffer.from(
+      res.Ok.public_key
     ).toString("hex");
+  } else {
+    error.innerText = res.Err;
+    return;
+  }
+
+  // Get signature
+  spinner = document.getElementById("spinner-signature");
+  spinner.hidden = false;
+  try {
+    res = await ecdsa_example.sign(hash);
+    console.log(res);
+    spinner.hidden = true;
+  } catch (err) {
+    error.innerText = err.message;
+    spinner.hidden = true;
+    return;
+  }
+  if (res.Ok) {
     document.getElementById("signature").value = Buffer.from(
       res.Ok.signature
     ).toString("hex");
@@ -58,7 +82,6 @@ async function sign(e) {
     document.getElementById("error").innerText = res.Err;
   }
   button.disabled = false;
-  return false;
 }
 
 window.addEventListener("load", () => {
@@ -68,6 +91,7 @@ window.addEventListener("load", () => {
     const message = document.getElementById("message").value.toString();
     document.getElementById("sha256").value =
       message == "" ? "" : sha256(message);
+    document.getElementById("public_key").value = "";
     document.getElementById("signature").value = "";
     document.getElementById("verified").innerText = "";
   };

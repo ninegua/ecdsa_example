@@ -19,21 +19,19 @@
         .spin::before {
           animation: 1.5s linear infinite spinner;
           animation-play-state: inherit;
-          border: solid 5px #cfd0d1;
+          border: solid 3px #cfd0d1;
           border-bottom-color: #1c87c9;
           border-radius: 50%;
           content: "";
-          height: 30px;
+          height: 10px;
           position: absolute;
-          top: 10%;
-          left: 10%;
-          transform: translate3d(-50%, -50%, 0);
-          width: 30px;
+          width: 10px;
           will-change: transform;
+          margin-left: 20px;
+          margin-top: 13px;
         }
         h1 { padding-right: 3em; }
         textarea { font-size: 1rem; font-family: var(--mono-font); color: var(--code); }
-        #spinner-div {margin: -45px 0 68px 30px; position: relative}
         #error { color: red }
         #verified { font-weight: bold; font-size: 120%; margin-left: 2em; }
     </style>
@@ -43,27 +41,28 @@
         <h1>Threshold ECDSA Demo</h1>
     </header>
     <main>
-      <form>
               <p>
               <label for="message">Message: &nbsp;</label><br>
               <textarea id="message" alt="Message"/></textarea><br>
               <button id="sign">Sign</button>
-              <div id="spinner-div"><div id="spinner" class="spin" hidden></div></div>
               </p>
               <p>
-              <input type="radio" name="impl" id="motoko" value="motoko">motoko</input>
+              <input type="radio" name="impl" id="motoko" value="motoko" checked>motoko</input>
               <input type="radio" name="impl" id="rust" value="rust">rust</input>
               </p>
               <p>
               <label for="sha256">SHA256:</label><br>
-              <textarea id="sha256" alt="SHA256"></textarea> <br>
-              <label for="publickey">Public Key:</label><br>
-              <textarea id="publickey" alt="Public Key"></textarea> <br>
-              <label for="signature">Signature:</label><br>
-              <textarea id="signature" alt="Signature"></textarea><br>
+              <textarea id="sha256" alt="SHA256" rows="2"></textarea> <br>
+              <label for="public_key">Public Key:</label>
+              <span id="spinner-pubkey" hidden><span id="spinner" class="spin"></span></span>
+              <br>
+              <textarea id="public_key" alt="Public Key" rows="2"></textarea> <br>
+              <label for="signature">Signature:</label>
+              <span id="spinner-signature" hidden><span id="spinner" class="spin"></span></span>
+              <br>
+              <textarea id="signature" alt="Signature" rows="3"></textarea><br>
               <button id="verify">Verify</button><span id="verified"></span>
               </p>
-      </form>
       <p id="error">
       </p>
     </main>
