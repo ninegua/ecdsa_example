@@ -30,7 +30,12 @@
     "local": {
       "bind": "127.0.0.1:8000",
       "type": "ephemeral"
+    },
+    "large05": {
+      "providers": [ "http://[2607:f6f0:3004:1:5000:3dff:febf:9908]:8080" ],
+      "type": "persistent"
     }
+
   },
   "version": 1
 }
