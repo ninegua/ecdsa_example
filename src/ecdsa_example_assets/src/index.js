@@ -1,6 +1,6 @@
 import { ecdsa_example_motoko } from "../../declarations/ecdsa_example_motoko";
 import { ecdsa_example_rust } from "../../declarations/ecdsa_example_rust";
-import { publicKeyVerify, signatureNormalize, ecdsaVerify } from "secp256k1";
+import { publicKeyVerify, ecdsaVerify } from "secp256k1";
 let sha256 = require("sha256");
 
 function fromHex(hexString) {
@@ -11,9 +11,7 @@ function verify(e) {
   let output = document.getElementById("verified");
   let hash = fromHex(document.getElementById("sha256").value);
   let public_key = fromHex(document.getElementById("public_key").value);
-  let signature = signatureNormalize(
-    fromHex(document.getElementById("signature").value)
-  );
+  let signature = fromHex(document.getElementById("signature").value);
   console.log("hash", hash);
   console.log("public_key", publicKeyVerify(public_key));
   console.log("signature", signature);
