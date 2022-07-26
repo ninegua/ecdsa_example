@@ -1,30 +1,15 @@
 {
   "canisters": {
-    "ic00": {
-      "candid": "src/ic00/ecdsa.did",
-      "wasm": "src/ic00/mock.wasm",
-      "type": "custom"
-    },
     "ecdsa_example_motoko": {
       "type": "motoko",
-      "main": "src/ecdsa_example_motoko/main.mo",
-      "dependencies": [
-        "ic00"
-      ]
+      "main": "src/ecdsa_example_motoko/main.mo"
     },
     "ecdsa_example_rust": {
       "candid": "src/ecdsa_example_rust/ecdsa_example.did",
       "package": "ecdsa_example",
-      "type": "rust",
-      "dependencies": [
-        "ic00"
-      ]
+      "type": "rust"
     },
     "ecdsa_example_assets": {
-      "dependencies": [
-        "ecdsa_example_motoko",
-        "ecdsa_example_rust"
-      ],
       "frontend": {
         "entrypoint": "src/ecdsa_example_assets/src/index.html"
       },
@@ -45,7 +30,12 @@
     "local": {
       "bind": "127.0.0.1:8000",
       "type": "ephemeral"
+    },
+    "large05": {
+      "providers": [ "http://[2607:f6f0:3004:1:5000:3dff:febf:9908]:8080" ],
+      "type": "persistent"
     }
+
   },
   "version": 1
 }

@@ -2,7 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
+const HtmlInlineScriptPlugin = require("html-inline-script-webpack-plugin");
 
 function initCanisterEnv() {
   let localCanisters, prodCanisters;
@@ -70,29 +70,13 @@ module.exports = {
     path: path.join(__dirname, "dist", frontendDirectory),
   },
 
-  // Depending in the language or framework you are using for
-  // front-end development, add module loaders to the default
-  // webpack configuration. For example, if you are using React
-  // modules and CSS as described in the "Adding a stylesheet"
-  // tutorial, uncomment the following lines:
-  // module: {
-  //  rules: [
-  //    { test: /\.(ts|tsx|jsx)$/, loader: "ts-loader" },
-  //    { test: /\.css$/, use: ['style-loader','css-loader'] }
-  //  ]
-  // },
   plugins: [
     new HtmlWebpackPlugin({
       template: path.join(__dirname, asset_entry),
       cache: false,
     }),
-    new CopyPlugin({
-      patterns: [
-        {
-          from: path.join(__dirname, "src", frontendDirectory, "assets"),
-          to: path.join(__dirname, "dist", frontendDirectory),
-        },
-      ],
+    new HtmlInlineScriptPlugin({
+      scriptMatchPattern: ["index.js"],
     }),
     new webpack.EnvironmentPlugin({
       NODE_ENV: "development",

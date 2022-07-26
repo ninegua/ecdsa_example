@@ -16,7 +16,5 @@ crate-type = ["cdylib"]
 [dependencies]
 serde = "1"
 candid = "0.7.4"
-ic-cdk = "0.5"
-ic-cdk-macros = "0.5"
-getrandom = { version = "0.2", features = ["custom"] }
-k256 = { version = "0.10", default-features = false, features = [ "ecdsa", "sha256" ] }
+ic-cdk = "=0.5.1"
+ic-cdk-macros = "=0.5.1"
