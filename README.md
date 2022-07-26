@@ -10,7 +10,7 @@ More specifically, the examples demonstrate:
 2. How to specify a `derivation_path` when querying public key or making a signature. The example here is to use caller's principal, but any byte arrays will do.
 3. How to verify the result signature against the returned public key (in Javascript).
 
-To run the demo, you will need a working installation of the [DFINITY SDK](https://github.com/dfinity/sdk), [nodejs](https://nodejs.org) and also Rust toolchain such as [rustup](https://rustup.rs).
+To run the demo, you will need a working installation of the [DFINITY SDK](https://github.com/dfinity/sdk) version 0.11 or above, [nodejs](https://nodejs.org) and also Rust toolchain such as [rustup](https://rustup.rs).
 
 To run with Motoko only, please comment out the `ecdsa_example_rust` section in `dfx.json` before proceed.
 
